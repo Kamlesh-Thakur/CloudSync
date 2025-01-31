@@ -2,30 +2,47 @@ namespace FileWatcherConfig;
 
 using System.Configuration;
 using System.Diagnostics;
+using System.ServiceProcess;
 using System.Windows.Forms;
 
 public partial class Form1 : Form
 {
+    private string serviceDirectory;
+    private string serviceExePath;
+
     public Form1()
     {
         InitializeComponent();
+
+        // Automatically locate the service directory
+        var appDirectory = AppDomain.CurrentDomain.BaseDirectory;
+        serviceDirectory = Path.Combine(appDirectory, "ServiceBin");
+        serviceExePath = Path.Combine(serviceDirectory, "FileWatcherService.exe");
+
+        if (!Directory.Exists(serviceDirectory) || !File.Exists(serviceExePath))
+        {
+            MessageBox.Show($"Service files not found at: {serviceDirectory}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
         txtLogFilePath.Text = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "FileWatcherLog.txt");
 
-        // Save Configuration
-        var configLocal = ConfigurationManager.OpenExeConfiguration(txtServicePath.Text);
-
-        var servicePath = configLocal.AppSettings.Settings["ServicePath"].Value;
-
-        if (string.IsNullOrEmpty(servicePath)) return;
-
-        var config = ConfigurationManager.OpenExeConfiguration(servicePath);
-
+        var config = ConfigurationManager.OpenExeConfiguration(serviceExePath);
 
         txtFolderPath.Text = config.AppSettings.Settings["FolderPath"].Value;
         txtConnectionString.Text = config.AppSettings.Settings["ConnectionString"].Value;
         txtContainerName.Text = config.AppSettings.Settings["ContainerName"].Value;
         txtLogFilePath.Text = config.AppSettings.Settings["LogFilePath"].Value;
-        txtServicePath.Text = config.AppSettings.Settings["ServicePath"].Value;
+        txtServicePath.Text = serviceExePath;
+
+        ServiceDisplayNameTextBox.Text =
+            string.IsNullOrEmpty(config.AppSettings.Settings["ServiceDisplayName"].Value)
+                ? "Cloud Sync"
+                : config.AppSettings.Settings["ServiceDisplayName"].Value;
+
+        ServiceDescriptionTextBox.Text =
+            string.IsNullOrEmpty(config.AppSettings.Settings["ServiceDescription"].Value)
+                ? "This service monitors a folder and uploads files to Azure Blob Storage."
+                : config.AppSettings.Settings["ServiceDescription"].Value;
     }
 
     private void btnBrowse_Click(object sender, EventArgs e)
@@ -51,7 +68,7 @@ public partial class Form1 : Form
 
     private void btnLocationBrowse_Click(object sender, EventArgs e)
     {
-        OpenFileDialog openFileDialog = new OpenFileDialog();
+        var openFileDialog = new OpenFileDialog();
         openFileDialog.Filter = "Executable Files (*.exe)|*.exe";
         openFileDialog.Title = "Select the Service Executable";
 
@@ -96,19 +113,16 @@ public partial class Form1 : Form
 
         // Save Configuration
         var config = ConfigurationManager.OpenExeConfiguration(txtServicePath.Text);
+
         config.AppSettings.Settings["FolderPath"].Value = folderPath;
         config.AppSettings.Settings["ConnectionString"].Value = connectionString;
         config.AppSettings.Settings["ContainerName"].Value = containerName;
         config.AppSettings.Settings["LogFilePath"].Value = logFilePath;
-        config.AppSettings.Settings["ServicePath"].Value = txtServicePath.Text;
+        config.AppSettings.Settings["ServicePath"].Value = serviceExePath;
+        config.AppSettings.Settings["ServiceDisplayName"].Value = ServiceDisplayNameTextBox.Text;
+        config.AppSettings.Settings["ServiceDescription"].Value = ServiceDescriptionTextBox.Text;
 
         config.Save(ConfigurationSaveMode.Modified);
-        ConfigurationManager.RefreshSection("appSettings");
-
-        var configLocal = ConfigurationManager.OpenExeConfiguration("");
-        configLocal.AppSettings.Settings["ServicePath"].Value = txtServicePath.Text;
-
-        configLocal.Save(ConfigurationSaveMode.Modified);
         ConfigurationManager.RefreshSection("appSettings");
 
         MessageBox.Show(
@@ -122,28 +136,42 @@ public partial class Form1 : Form
     {
         try
         {
-            string serviceExePath = txtServicePath.Text;
-            string serviceName = "Cloud Sync";
+            var serviceExePath = txtServicePath.Text;
+            var serviceName = "FileWatcherService";
+            var serviceDisplayName = ServiceDisplayNameTextBox.Text;
 
-            Process process = new Process();
+            if (ServiceExists(serviceName))
+            {
+                MessageBox.Show("The service already exists.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            var process = new Process();
             process.StartInfo.FileName = "sc.exe";
-            process.StartInfo.Arguments = $"create {serviceName} binPath= \"{serviceExePath}\" start= auto";
+            process.StartInfo.Arguments = $"create {serviceName} binPath= \"{serviceExePath}\" start= auto DisplayName= \"{serviceDisplayName}\"";
             process.StartInfo.UseShellExecute = false;
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.CreateNoWindow = true;
             process.Start();
 
-            string output = process.StandardOutput.ReadToEnd();
+            var output = process.StandardOutput.ReadToEnd();
             process.WaitForExit();
 
-            if (process.ExitCode == 0)
-            {
-                MessageBox.Show("Service installed successfully.");
-            }
-            else
-            {
-                MessageBox.Show($"Service installation failed. Output: {output}");
-            }
+            MessageBox.Show(process.ExitCode == 0
+                ? "Service installed successfully."
+                : $"Service installation failed. Output: {output}", "Success", MessageBoxButtons.OK);
+
+            var serviceDescription = ServiceDescriptionTextBox.Text;
+            var descriptionProcess = new Process();
+            descriptionProcess.StartInfo.FileName = "sc.exe";
+            descriptionProcess.StartInfo.Arguments = $"description {serviceName} \"{serviceDescription}\"";
+            descriptionProcess.StartInfo.UseShellExecute = false;
+            descriptionProcess.StartInfo.RedirectStandardOutput = true;
+            descriptionProcess.StartInfo.CreateNoWindow = true;
+            descriptionProcess.Start();
+
+            descriptionProcess.StandardOutput.ReadToEnd();
+            descriptionProcess.WaitForExit();
         }
         catch (Exception ex)
         {
@@ -155,27 +183,24 @@ public partial class Form1 : Form
     {
         try
         {
-            string serviceName = "Cloud Sync";
+            var serviceName = "FileWatcherService";
 
-            Process process = new Process();
-            process.StartInfo.FileName = "sc.exe";
-            process.StartInfo.Arguments = $"start {serviceName}";
-            process.StartInfo.UseShellExecute = false;
-            process.StartInfo.RedirectStandardOutput = true;
-            process.StartInfo.CreateNoWindow = true;
-            process.Start();
-
-            string output = process.StandardOutput.ReadToEnd();
-            process.WaitForExit();
-
-            if (process.ExitCode == 0)
+            if (!ServiceExists(serviceName))
             {
-                MessageBox.Show("Service started successfully.");
+                MessageBox.Show("The service does not exist.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
-            else
+
+            using var sc = new ServiceController(serviceName);
+            if (sc.Status == ServiceControllerStatus.Running)
             {
-                MessageBox.Show($"Service start failed. Output: {output}");
+                MessageBox.Show("The service is already running.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
             }
+
+            sc.Start();
+            sc.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromSeconds(30));
+            MessageBox.Show("Service started successfully.");
         }
         catch (Exception ex)
         {
@@ -187,27 +212,24 @@ public partial class Form1 : Form
     {
         try
         {
-            string serviceName = "Cloud Sync";
+            var serviceName = "FileWatcherService";
 
-            Process process = new Process();
-            process.StartInfo.FileName = "sc.exe";
-            process.StartInfo.Arguments = $"stop {serviceName}";
-            process.StartInfo.UseShellExecute = false;
-            process.StartInfo.RedirectStandardOutput = true;
-            process.StartInfo.CreateNoWindow = true;
-            process.Start();
-
-            string output = process.StandardOutput.ReadToEnd();
-            process.WaitForExit();
-
-            if (process.ExitCode == 0)
+            if (!ServiceExists(serviceName))
             {
-                MessageBox.Show("Service stopped successfully.");
+                MessageBox.Show("The service does not exist.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
-            else
+
+            using var sc = new ServiceController(serviceName);
+            if (sc.Status == ServiceControllerStatus.Stopped)
             {
-                MessageBox.Show($"Service stop failed. Output: {output}");
+                MessageBox.Show("The service is already stopped.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
             }
+
+            sc.Stop();
+            sc.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(30));
+            MessageBox.Show("Service stopped successfully.");
         }
         catch (Exception ex)
         {
@@ -219,9 +241,25 @@ public partial class Form1 : Form
     {
         try
         {
-            string serviceName = "Cloud Sync";
+            var serviceName = "FileWatcherService";
 
-            Process process = new Process();
+            if (!ServiceExists(serviceName))
+            {
+                MessageBox.Show("The service does not exist.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // Stop the service if it is running
+            using (var sc = new ServiceController(serviceName))
+            {
+                if (sc.Status == ServiceControllerStatus.Running)
+                {
+                    sc.Stop();
+                    sc.WaitForStatus(ServiceControllerStatus.Stopped, TimeSpan.FromSeconds(30));
+                }
+            }
+
+            var process = new Process();
             process.StartInfo.FileName = "sc.exe";
             process.StartInfo.Arguments = $"delete {serviceName}";
             process.StartInfo.UseShellExecute = false;
@@ -229,21 +267,30 @@ public partial class Form1 : Form
             process.StartInfo.CreateNoWindow = true;
             process.Start();
 
-            string output = process.StandardOutput.ReadToEnd();
+            var output = process.StandardOutput.ReadToEnd();
             process.WaitForExit();
 
-            if (process.ExitCode == 0)
-            {
-                MessageBox.Show("Service uninstalled successfully.");
-            }
-            else
-            {
-                MessageBox.Show($"Service uninstallation failed. Output: {output}");
-            }
+            MessageBox.Show(process.ExitCode == 0
+                ? "Service uninstalled successfully."
+                : $"Service uninstallation failed. Output: {output}");
         }
         catch (Exception ex)
         {
             MessageBox.Show($"Error uninstalling service: {ex.Message}");
+        }
+    }
+
+    private bool ServiceExists(string serviceName)
+    {
+        try
+        {
+            using var sc = new ServiceController(serviceName);
+            var status = sc.Status;
+            return true;
+        }
+        catch (InvalidOperationException)
+        {
+            return false;
         }
     }
 }

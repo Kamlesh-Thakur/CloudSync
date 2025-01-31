@@ -10,6 +10,164 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="ServiceBin\Azure.Core.dll" />
+    <None Remove="ServiceBin\Azure.Core.xml" />
+    <None Remove="ServiceBin\Azure.Storage.Blobs.dll" />
+    <None Remove="ServiceBin\Azure.Storage.Blobs.xml" />
+    <None Remove="ServiceBin\Azure.Storage.Common.dll" />
+    <None Remove="ServiceBin\Azure.Storage.Common.xml" />
+    <None Remove="ServiceBin\FileWatcherService.application" />
+    <None Remove="ServiceBin\FileWatcherService.exe" />
+    <None Remove="ServiceBin\FileWatcherService.exe.config" />
+    <None Remove="ServiceBin\FileWatcherService.exe.manifest" />
+    <None Remove="ServiceBin\FileWatcherService.pdb" />
+    <None Remove="ServiceBin\Microsoft.Bcl.AsyncInterfaces.dll" />
+    <None Remove="ServiceBin\Microsoft.Bcl.AsyncInterfaces.xml" />
+    <None Remove="ServiceBin\System.Buffers.dll" />
+    <None Remove="ServiceBin\System.Buffers.xml" />
+    <None Remove="ServiceBin\System.ClientModel.dll" />
+    <None Remove="ServiceBin\System.ClientModel.xml" />
+    <None Remove="ServiceBin\System.Diagnostics.DiagnosticSource.dll" />
+    <None Remove="ServiceBin\System.Diagnostics.DiagnosticSource.xml" />
+    <None Remove="ServiceBin\System.IO.Hashing.dll" />
+    <None Remove="ServiceBin\System.IO.Hashing.xml" />
+    <None Remove="ServiceBin\System.Memory.Data.dll" />
+    <None Remove="ServiceBin\System.Memory.Data.xml" />
+    <None Remove="ServiceBin\System.Memory.dll" />
+    <None Remove="ServiceBin\System.Memory.xml" />
+    <None Remove="ServiceBin\System.Numerics.Vectors.dll" />
+    <None Remove="ServiceBin\System.Numerics.Vectors.xml" />
+    <None Remove="ServiceBin\System.Runtime.CompilerServices.Unsafe.dll" />
+    <None Remove="ServiceBin\System.Runtime.CompilerServices.Unsafe.xml" />
+    <None Remove="ServiceBin\System.Text.Encodings.Web.dll" />
+    <None Remove="ServiceBin\System.Text.Encodings.Web.xml" />
+    <None Remove="ServiceBin\System.Text.Json.dll" />
+    <None Remove="ServiceBin\System.Text.Json.xml" />
+    <None Remove="ServiceBin\System.Threading.Tasks.Extensions.dll" />
+    <None Remove="ServiceBin\System.Threading.Tasks.Extensions.xml" />
+    <None Remove="ServiceBin\System.ValueTuple.dll" />
+    <None Remove="ServiceBin\System.ValueTuple.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="ServiceBin\Azure.Core.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\Azure.Core.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\Azure.Storage.Blobs.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\Azure.Storage.Blobs.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\Azure.Storage.Common.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\Azure.Storage.Common.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\FileWatcherService.application">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\FileWatcherService.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\FileWatcherService.exe.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\FileWatcherService.exe.manifest">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\FileWatcherService.pdb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\Microsoft.Bcl.AsyncInterfaces.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\Microsoft.Bcl.AsyncInterfaces.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\System.Buffers.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\System.Buffers.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\System.ClientModel.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\System.ClientModel.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\System.Diagnostics.DiagnosticSource.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\System.Diagnostics.DiagnosticSource.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\System.IO.Hashing.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\System.IO.Hashing.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\System.Memory.Data.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\System.Memory.Data.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\System.Memory.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\System.Memory.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\System.Numerics.Vectors.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\System.Numerics.Vectors.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\System.Runtime.CompilerServices.Unsafe.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\System.Runtime.CompilerServices.Unsafe.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\System.Text.Encodings.Web.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\System.Text.Encodings.Web.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\System.Text.Json.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\System.Text.Json.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\System.Threading.Tasks.Extensions.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\System.Threading.Tasks.Extensions.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\System.ValueTuple.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ServiceBin\System.ValueTuple.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.ServiceProcess.ServiceController" Version="9.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="System.Configuration.Install">
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.Configuration.Install.dll</HintPath>
     </Reference>
