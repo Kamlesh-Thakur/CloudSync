@@ -1,6 +1,7 @@
 namespace FileWatcherConfig;
 
 using System.Configuration;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 public partial class Form1 : Form
@@ -115,5 +116,134 @@ public partial class Form1 : Form
             "Success",
             MessageBoxButtons.OK,
             MessageBoxIcon.Information);
+    }
+
+    private void InstallServeButton_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            string serviceExePath = txtServicePath.Text;
+            string serviceName = "Cloud Sync";
+
+            Process process = new Process();
+            process.StartInfo.FileName = "sc.exe";
+            process.StartInfo.Arguments = $"create {serviceName} binPath= \"{serviceExePath}\" start= auto";
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.CreateNoWindow = true;
+            process.Start();
+
+            string output = process.StandardOutput.ReadToEnd();
+            process.WaitForExit();
+
+            if (process.ExitCode == 0)
+            {
+                MessageBox.Show("Service installed successfully.");
+            }
+            else
+            {
+                MessageBox.Show($"Service installation failed. Output: {output}");
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error installing service: {ex.Message}");
+        }
+    }
+
+    private void StartServiceButton_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            string serviceName = "Cloud Sync";
+
+            Process process = new Process();
+            process.StartInfo.FileName = "sc.exe";
+            process.StartInfo.Arguments = $"start {serviceName}";
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.CreateNoWindow = true;
+            process.Start();
+
+            string output = process.StandardOutput.ReadToEnd();
+            process.WaitForExit();
+
+            if (process.ExitCode == 0)
+            {
+                MessageBox.Show("Service started successfully.");
+            }
+            else
+            {
+                MessageBox.Show($"Service start failed. Output: {output}");
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error starting service: {ex.Message}");
+        }
+    }
+
+    private void StopServiceButton_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            string serviceName = "Cloud Sync";
+
+            Process process = new Process();
+            process.StartInfo.FileName = "sc.exe";
+            process.StartInfo.Arguments = $"stop {serviceName}";
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.CreateNoWindow = true;
+            process.Start();
+
+            string output = process.StandardOutput.ReadToEnd();
+            process.WaitForExit();
+
+            if (process.ExitCode == 0)
+            {
+                MessageBox.Show("Service stopped successfully.");
+            }
+            else
+            {
+                MessageBox.Show($"Service stop failed. Output: {output}");
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error stopping service: {ex.Message}");
+        }
+    }
+
+    private void UninstallServiceButton_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            string serviceName = "Cloud Sync";
+
+            Process process = new Process();
+            process.StartInfo.FileName = "sc.exe";
+            process.StartInfo.Arguments = $"delete {serviceName}";
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.CreateNoWindow = true;
+            process.Start();
+
+            string output = process.StandardOutput.ReadToEnd();
+            process.WaitForExit();
+
+            if (process.ExitCode == 0)
+            {
+                MessageBox.Show("Service uninstalled successfully.");
+            }
+            else
+            {
+                MessageBox.Show($"Service uninstallation failed. Output: {output}");
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error uninstalling service: {ex.Message}");
+        }
     }
 }

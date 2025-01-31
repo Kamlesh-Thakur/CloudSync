@@ -20,9 +20,10 @@ namespace FileWatcherService
             processInstaller.Account = ServiceAccount.LocalSystem;
 
             // Set the service installer properties
-            serviceInstaller.ServiceName = "FileWatcherService2";
-            serviceInstaller.DisplayName = "Cloud Sync v2";
+            serviceInstaller.ServiceName = "FileWatcherService";
+            serviceInstaller.DisplayName = "Cloud Sync";
             serviceInstaller.Description = "Watches a folder and uploads files to Azure.";
+            serviceInstaller.StartType = ServiceStartMode.Automatic;
 
             // Add installers to the collection
             Installers.Add(processInstaller);

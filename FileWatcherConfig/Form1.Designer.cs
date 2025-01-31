@@ -41,6 +41,10 @@
             label4 = new Label();
             txtServicePath = new TextBox();
             btnSaveConfig = new Button();
+            InstallServeButton = new Button();
+            StartServiceButton = new Button();
+            StopServiceButton = new Button();
+            UninstallServiceButton = new Button();
             SuspendLayout();
             // 
             // txtFolderPath
@@ -161,11 +165,63 @@
             btnSaveConfig.UseVisualStyleBackColor = false;
             btnSaveConfig.Click += btnSaveConfig_Click;
             // 
+            // InstallServeButton
+            // 
+            InstallServeButton.BackColor = Color.LightGreen;
+            InstallServeButton.ForeColor = Color.DarkGreen;
+            InstallServeButton.Location = new Point(507, 339);
+            InstallServeButton.Name = "InstallServeButton";
+            InstallServeButton.Size = new Size(130, 39);
+            InstallServeButton.TabIndex = 17;
+            InstallServeButton.Text = "Install";
+            InstallServeButton.UseVisualStyleBackColor = false;
+            InstallServeButton.Click += InstallServeButton_Click;
+            // 
+            // StartServiceButton
+            // 
+            StartServiceButton.BackColor = Color.LightGreen;
+            StartServiceButton.ForeColor = Color.DarkGreen;
+            StartServiceButton.Location = new Point(371, 339);
+            StartServiceButton.Name = "StartServiceButton";
+            StartServiceButton.Size = new Size(130, 39);
+            StartServiceButton.TabIndex = 18;
+            StartServiceButton.Text = "Start";
+            StartServiceButton.UseVisualStyleBackColor = false;
+            StartServiceButton.Click += StartServiceButton_Click;
+            // 
+            // StopServiceButton
+            // 
+            StopServiceButton.BackColor = Color.LightCoral;
+            StopServiceButton.ForeColor = Color.DarkRed;
+            StopServiceButton.Location = new Point(235, 339);
+            StopServiceButton.Name = "StopServiceButton";
+            StopServiceButton.Size = new Size(130, 39);
+            StopServiceButton.TabIndex = 19;
+            StopServiceButton.Text = "Stop";
+            StopServiceButton.UseVisualStyleBackColor = false;
+            StopServiceButton.Click += StopServiceButton_Click;
+            // 
+            // UninstallServiceButton
+            // 
+            UninstallServiceButton.BackColor = Color.LightCoral;
+            UninstallServiceButton.ForeColor = Color.DarkRed;
+            UninstallServiceButton.Location = new Point(99, 339);
+            UninstallServiceButton.Name = "UninstallServiceButton";
+            UninstallServiceButton.Size = new Size(130, 39);
+            UninstallServiceButton.TabIndex = 20;
+            UninstallServiceButton.Text = "Uninstall";
+            UninstallServiceButton.UseVisualStyleBackColor = false;
+            UninstallServiceButton.Click += UninstallServiceButton_Click;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(9F, 19F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(900, 407);
+            Controls.Add(UninstallServiceButton);
+            Controls.Add(StopServiceButton);
+            Controls.Add(StartServiceButton);
+            Controls.Add(InstallServeButton);
             Controls.Add(btnSaveConfig);
             Controls.Add(btnLocationBrowse);
             Controls.Add(label4);
@@ -201,5 +257,9 @@
         private Label label4;
         private TextBox txtServicePath;
         private Button btnSaveConfig;
+        private Button InstallServeButton;
+        private Button StartServiceButton;
+        private Button StopServiceButton;
+        private Button UninstallServiceButton;
     }
 }
